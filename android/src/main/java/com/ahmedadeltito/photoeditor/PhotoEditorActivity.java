@@ -904,11 +904,15 @@ public class PhotoEditorActivity
                 final Uri resultUri = UCrop.getOutput(data);
                 if (resultUri != null) {
                     try {
-                        selectedImagePath = resultUri.toString();
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(
-                            this.getContentResolver(),
-                            resultUri
-                        );
+                        String newPath = resultUri.getPath();
+                        selectedImagePath = newPath != null ? newPath : resultUri.toString();
+                        Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
+                        if (bitmap == null) {
+                            bitmap = MediaStore.Images.Media.getBitmap(
+                                this.getContentResolver(),
+                                resultUri
+                            );
+                        }
                         photoEditImageView.setImageBitmap(bitmap);
                     } catch (Exception ex) {
                         System.out.println("NO IMAGE DATA FOUND");
