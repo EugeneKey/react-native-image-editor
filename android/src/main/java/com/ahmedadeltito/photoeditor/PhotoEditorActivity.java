@@ -106,6 +106,8 @@ public class PhotoEditorActivity
     private LinearLayout actionsContainer;
     private View rootView;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener;
+    private int baseInset = -1;
+    private int lastKeyboardInset = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -505,8 +507,6 @@ public class PhotoEditorActivity
         }
 
         keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-            private int lastInset = -1;
-
             @Override
             public void onGlobalLayout() {
                 Rect r = new Rect();
@@ -518,12 +518,21 @@ public class PhotoEditorActivity
                     inset = 0;
                 }
 
-                if (lastInset == inset) {
+                if (baseInset == -1 || inset < baseInset) {
+                    baseInset = inset;
+                }
+
+                int keyboardInset = inset - baseInset;
+                if (keyboardInset < 0) {
+                    keyboardInset = 0;
+                }
+
+                if (lastKeyboardInset == keyboardInset) {
                     return;
                 }
-                lastInset = inset;
+                lastKeyboardInset = keyboardInset;
 
-                bottomParent.setTranslationY(-inset);
+                bottomParent.setTranslationY(-keyboardInset);
 
                 if (messageInput != null) {
                     int actionsHeight = actionsContainer != null ? actionsContainer.getHeight() : 0;
