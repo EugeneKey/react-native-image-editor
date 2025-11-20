@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -24,7 +25,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -98,6 +101,11 @@ public class PhotoEditorActivity
     private boolean hideBottomControls = false;
 
     private ImageView photoEditImageView;
+    private EditText messageInput;
+    private RelativeLayout bottomParent;
+    private LinearLayout actionsContainer;
+    private View rootView;
+    private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +168,19 @@ public class PhotoEditorActivity
         TextView clearAllTextView = (TextView) findViewById(R.id.clear_all_tv);
         TextView goToNextTextView = (TextView) findViewById(R.id.go_to_next_screen_tv);
         photoEditImageView = (ImageView) findViewById(R.id.photo_edit_iv);
+        messageInput = (EditText) findViewById(R.id.message_input);
+        bottomParent = (RelativeLayout) findViewById(R.id.bottom_parent_rl);
+        actionsContainer = (LinearLayout) findViewById(R.id.actions_container);
+        rootView = findViewById(R.id.parent);
+        if (messageInput != null) {
+            String initialMessage = getIntent().getStringExtra("messageText");
+            if (initialMessage != null) {
+                messageInput.setText(initialMessage);
+                messageInput.setSelection(initialMessage.length());
+            }
+            messageInput.setHorizontallyScrolling(false);
+        }
+        setupKeyboardHandling();
         mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         topShadow = findViewById(R.id.top_shadow);
         topShadowRelativeLayout = (RelativeLayout) findViewById(R.id.top_parent_rl);
@@ -444,6 +465,9 @@ public class PhotoEditorActivity
             drawingViewColorPickerRecyclerView.setVisibility(View.VISIBLE);
             doneDrawingTextView.setVisibility(View.VISIBLE);
             eraseDrawingTextView.setVisibility(View.VISIBLE);
+            if (messageInput != null) {
+                messageInput.setVisibility(View.GONE);
+            }
             LinearLayoutManager layoutManager = new LinearLayoutManager(
                 PhotoEditorActivity.this,
                 LinearLayoutManager.HORIZONTAL,
@@ -469,7 +493,90 @@ public class PhotoEditorActivity
             drawingViewColorPickerRecyclerView.setVisibility(View.GONE);
             doneDrawingTextView.setVisibility(View.GONE);
             eraseDrawingTextView.setVisibility(View.GONE);
+            if (messageInput != null) {
+                messageInput.setVisibility(View.VISIBLE);
+            }
         }
+    }
+
+    private void setupKeyboardHandling() {
+        if (rootView == null || bottomParent == null) {
+            return;
+        }
+
+        keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            private int lastInset = -1;
+
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                rootView.getWindowVisibleDisplayFrame(r);
+                int screenHeight = rootView.getRootView().getHeight();
+                int inset = screenHeight - r.bottom;
+
+                if (inset < dpToPx(40)) {
+                    inset = 0;
+                }
+
+                if (lastInset == inset) {
+                    return;
+                }
+                lastInset = inset;
+
+                bottomParent.setTranslationY(-inset);
+
+                if (messageInput != null) {
+                    int actionsHeight = actionsContainer != null ? actionsContainer.getHeight() : 0;
+                    int availableHeight = r.height() - actionsHeight - dpToPx(48);
+                    if (availableHeight > 0) {
+                        messageInput.setMaxHeight(availableHeight);
+                    }
+                }
+            }
+        };
+
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
+    }
+
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (rootView != null && keyboardLayoutListener != null) {
+            rootView.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardLayoutListener);
+        }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View currentFocus = getCurrentFocus();
+            if (currentFocus != null && currentFocus == messageInput) {
+                Rect outRect = new Rect();
+                messageInput.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+                    messageInput.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(
+                        Context.INPUT_METHOD_SERVICE
+                    );
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(messageInput.getWindowToken(), 0);
+                    }
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private String getCurrentMessageText() {
+        if (messageInput == null) {
+            return "";
+        }
+        CharSequence text = messageInput.getText();
+        return text != null ? text.toString() : "";
     }
 
     private void returnBackWithSavedImage() {
@@ -506,6 +613,7 @@ public class PhotoEditorActivity
                 String imagePath = saveImageToExternalStorage();
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("imagePath", imagePath);
+                returnIntent.putExtra("messageText", getCurrentMessageText());
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
                 Toast
@@ -610,6 +718,7 @@ public class PhotoEditorActivity
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("imagePath", selectedImagePath);
+                returnIntent.putExtra("messageText", getCurrentMessageText());
                 setResult(Activity.RESULT_OK, returnIntent);
                 overlay.setVisibility(View.GONE);
 

@@ -40,6 +40,10 @@ public final class PhotoEditorViewController: UIViewController {
     @IBOutlet weak var clearButton: UIButton!
     
     @IBOutlet weak var rotateButton: UIButton!
+    let captionTextView = UITextView()
+    let captionPlaceholderLabel = UILabel()
+    var captionHeightConstraint: NSLayoutConstraint?
+    @objc public var initialMessageText: String?
     
     @objc public var image: UIImage?
     /**
@@ -109,6 +113,7 @@ public final class PhotoEditorViewController: UIViewController {
 
         // set languages for controls
         doneButton.setTitle(TranslationService.shared.getTranslation(for: "doneTitle"), for: .normal)
+        setupCaptionInput()
     }
     
     func configureCollectionView() {
@@ -136,12 +141,84 @@ public final class PhotoEditorViewController: UIViewController {
         let size = image.suitableSize(widthLimit: UIScreen.main.bounds.width)
         imageViewHeightConstraint.constant = (size?.height)!
     }
+
+    private func setupCaptionInput() {
+        captionTextView.translatesAutoresizingMaskIntoConstraints = false
+        captionTextView.backgroundColor = UIColor(red: 32/255, green: 43/255, blue: 44/255, alpha: 1)
+        captionTextView.textColor = .white
+        captionTextView.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        captionTextView.layer.cornerRadius = 24
+        captionTextView.clipsToBounds = true
+        captionTextView.isScrollEnabled = false
+        captionTextView.textContainerInset = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+        captionTextView.text = initialMessageText ?? ""
+        captionTextView.tintColor = .white
+        captionTextView.returnKeyType = .default
+        captionTextView.autocorrectionType = .yes
+        view.addSubview(captionTextView)
+
+        captionPlaceholderLabel.translatesAutoresizingMaskIntoConstraints = false
+        captionPlaceholderLabel.text = "Add a caption..."
+        captionPlaceholderLabel.textColor = UIColor.white.withAlphaComponent(0.5)
+        captionPlaceholderLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        captionTextView.addSubview(captionPlaceholderLabel)
+
+        captionHeightConstraint = captionTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 48)
+        captionHeightConstraint?.isActive = true
+
+        NSLayoutConstraint.activate([
+            captionTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            captionTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            captionTextView.bottomAnchor.constraint(equalTo: bottomToolbar.topAnchor, constant: 0),
+            captionPlaceholderLabel.leadingAnchor.constraint(equalTo: captionTextView.leadingAnchor, constant: 24),
+            captionPlaceholderLabel.topAnchor.constraint(equalTo: captionTextView.topAnchor, constant: 12)
+        ])
+
+        captionPlaceholderLabel.isHidden = !(captionTextView.text?.isEmpty ?? true)
+        updateCaptionHeight()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captionTextDidChange),
+            name: UITextView.textDidChangeNotification,
+            object: captionTextView
+        )
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleBackgroundTap(_:)))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func captionTextDidChange() {
+        captionPlaceholderLabel.isHidden = !(captionTextView.text?.isEmpty ?? true)
+        updateCaptionHeight()
+    }
+
+    @objc private func handleBackgroundTap(_ gesture: UITapGestureRecognizer) {
+        let location = gesture.location(in: captionTextView)
+        if !captionTextView.bounds.contains(location) {
+            captionTextView.resignFirstResponder()
+        }
+    }
+
+    private func updateCaptionHeight() {
+        guard let constraint = captionHeightConstraint else { return }
+        let width = captionTextView.bounds.width
+        if width == 0 { return }
+        let size = captionTextView.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude))
+        constraint.constant = max(48, size.height)
+        view.layoutIfNeeded()
+    }
     
     func hideToolbar(hide: Bool) {
         topToolbar.isHidden = hide
         topGradient.isHidden = hide
         bottomToolbar.isHidden = hide
         bottomGradient.isHidden = hide
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UITextView.textDidChangeNotification, object: captionTextView)
     }
 }
 

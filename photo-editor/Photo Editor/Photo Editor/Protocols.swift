@@ -18,7 +18,7 @@ import UIKit
     /**
      - Parameter image: edited Image
      */
-    func doneEditing(image: UIImage)
+    func doneEditing(image: UIImage, messageText: String?)
     /**
      StickersViewController did Disappear
      */

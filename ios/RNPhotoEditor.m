@@ -15,7 +15,7 @@ NSString *_editImagePath = nil;
 RCTResponseSenderBlock _onDoneEditing = nil;
 RCTResponseSenderBlock _onCancelEditing = nil;
 
-- (void)doneEditingWithImage:(UIImage *)image {
+- (void)doneEditingWithImage:(UIImage *)image messageText:(NSString *)messageText {
     if (_onDoneEditing == nil) return;
 
     NSError* error;
@@ -33,7 +33,15 @@ RCTResponseSenderBlock _onCancelEditing = nil;
     if (error != nil)
         NSLog(@"write error %@", error);
 
-    _onDoneEditing(@[path]);
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    if (path != nil) {
+        [result setObject:path forKey:@"imagePath"];
+    }
+    if (messageText != nil) {
+        [result setObject:messageText forKey:@"messageText"];
+    }
+
+    _onDoneEditing(@[result]);
 }
 
 - (void)canceledEditing {
@@ -95,6 +103,10 @@ RCT_EXPORT_METHOD(Edit:(nonnull NSDictionary *)props onDone:(RCTResponseSenderBl
         }
 
         photoEditor.colors = passColors;
+        NSString *messageText = [props objectForKey:@"messageText"];
+        if (messageText != nil && [messageText isKindOfClass:[NSString class]]) {
+            photoEditor.initialMessageText = messageText;
+        }
 
         // Invoke Editor
         photoEditor.photoEditorDelegate = self;

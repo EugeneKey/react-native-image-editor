@@ -6,6 +6,7 @@ import android.graphics.Color;
 import com.ahmedadeltito.photoeditor.PhotoEditorActivity;
 import com.ahmedadeltito.photoeditor.TranslationService;
 import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -13,6 +14,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import java.util.ArrayList;
 
 public class RNPhotoEditorModule extends ReactContextBaseJavaModule {
@@ -36,7 +38,18 @@ public class RNPhotoEditorModule extends ReactContextBaseJavaModule {
                     if (resultCode == Activity.RESULT_CANCELED) {
                         mCancelCallback.invoke(resultCode);
                     } else {
-                        mDoneCallback.invoke(intent.getExtras().getString("imagePath"));
+                        WritableMap result = Arguments.createMap();
+                        if (intent != null && intent.getExtras() != null) {
+                            String imagePath = intent.getExtras().getString("imagePath");
+                            String messageText = intent.getExtras().getString("messageText");
+                            if (imagePath != null) {
+                                result.putString("imagePath", imagePath);
+                            }
+                            if (messageText != null) {
+                                result.putString("messageText", messageText);
+                            }
+                        }
+                        mDoneCallback.invoke(result);
                     }
                 }
 
@@ -99,6 +112,9 @@ public class RNPhotoEditorModule extends ReactContextBaseJavaModule {
         intent.putExtra("colorPickerColors", colorPickerColors);
         intent.putExtra("hiddenControls", hiddenControlsIntent);
         intent.putExtra("stickers", stickersIntent);
+        if (props.hasKey("messageText") && !props.isNull("messageText")) {
+            intent.putExtra("messageText", props.getString("messageText"));
+        }
 
         mCancelCallback = onCancel;
         mDoneCallback = onDone;

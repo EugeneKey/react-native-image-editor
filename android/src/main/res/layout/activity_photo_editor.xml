@@ -169,82 +169,110 @@
             <View
                 android:id="@+id/bottom_shadow"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_alignParentBottom="true"
+                android:layout_height="120dp"
+                android:layout_alignBottom="@+id/bottom_parent_rl"
                 android:background="@drawable/below_shadow" />
 
             <RelativeLayout
                 android:id="@+id/bottom_parent_rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/bottom_shadow"
-                android:layout_alignTop="@+id/bottom_shadow"
+                android:layout_alignParentBottom="true"
                 android:paddingLeft="26dp"
                 android:paddingRight="26dp">
 
-                <TextView
-                    android:id="@+id/save_tv"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/message_input"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:text="@string/ic_save"
-                    android:textColor="#FFFFFF"
-                    android:textSize="25sp" />
-
-                <TextView
-                    android:id="@+id/clear_all_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_toEndOf="@+id/save_tv"
-                    android:gravity="center"
-                    android:text="@string/ic_clear_all"
-                    android:textColor="#FFFFFF"
-                    android:textSize="25sp" />
-
-
-                <TextView
-                    android:id="@+id/undo_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignEnd="@+id/undo_text_tv"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_toEndOf="@+id/clear_all_tv"
-                    android:gravity="center"
-                    android:text="@string/ic_clear_all"
-                    android:textColor="#FFFFFF"
-                    android:textSize="25sp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/undo_text_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/clear_all_tv"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_toEndOf="@+id/clear_all_tv"
-                    android:text="@string/undo"
-                    android:textColor="#FFFFFF"
-                    android:textSize="15sp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/go_to_next_screen_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="@string/ic_continue"
+                    android:layout_above="@+id/actions_container"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/caption_input_bg"
+                    android:gravity="top|start"
+                    android:hint="@string/caption_hint"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:imeOptions="flagNoEnterAction"
+                    android:minLines="1"
+                    android:overScrollMode="never"
+                    android:scrollbars="vertical"
+                    android:scrollHorizontally="false"
+                    android:paddingStart="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="12dp"
                     android:textColor="#FFFFFF"
-                    android:textSize="40sp" />
+                    android:textColorHint="#80FFFFFF"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/actions_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/save_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/ic_save"
+                        android:textColor="#FFFFFF"
+                        android:textSize="25sp" />
+
+                    <TextView
+                        android:id="@+id/clear_all_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:text="@string/ic_clear_all"
+                        android:textColor="#FFFFFF"
+                        android:textSize="25sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/undo_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/ic_clear_all"
+                            android:textColor="#FFFFFF"
+                            android:textSize="25sp"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/undo_text_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/undo"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/go_to_next_screen_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ic_continue"
+                        android:textColor="#FFFFFF"
+                        android:textSize="40sp" />
+                </LinearLayout>
 
             </RelativeLayout>
 

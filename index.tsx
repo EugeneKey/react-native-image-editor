@@ -19,13 +19,19 @@ type Language = {
     eraserTitle?: string
 }
 
+export type PhotoEditorResult = {
+    imagePath: string
+    messageText?: string
+}
+
 export interface PhotoEditorProps {
     path: string
+    messageText?: string
     colors?: string[]
     stickers?: string[]
     hiddenControls?: ('text' | 'clear' | 'draw' | 'save' | 'share' | 'sticker' | 'crop')[]
     languages: Language
-    onDone?: (imagePath: string) => void
+    onDone?: (result: PhotoEditorResult) => void
     onCancel?: (resultCode: number) => void
 }
 
@@ -93,8 +99,8 @@ export default class PhotoEditor {
 
         RNPhotoEditor.Edit(
             { colors, hiddenControls, stickers, languages, ...props },
-            (imagePath: string) => {
-                onDone && onDone(imagePath)
+            (result: PhotoEditorResult) => {
+                onDone && onDone(result)
             },
             (resultCode: number) => {
                 onCancel && onCancel(resultCode)

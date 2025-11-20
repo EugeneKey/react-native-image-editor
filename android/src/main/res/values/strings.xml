@@ -29,5 +29,6 @@
     <string name="choose_from_camera">Choose From Camera</string>
     <string name="undo"></string>
     <string name="erase">Erase</string>
+    <string name="caption_hint">Add a caption...</string>
 
 </resources>
