@@ -2,8 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
     tools:context="com.ahmedadeltito.photoeditor.PhotoEditorActivity">
 
@@ -114,7 +114,7 @@
                     android:text="@string/ic_close"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp" />
-            
+
                 <TextView
                     android:id="@+id/add_text_tv"
                     android:layout_width="wrap_content"
@@ -125,7 +125,7 @@
                     android:text="@string/ic_text"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp" />
-        
+
                 <TextView
                     android:id="@+id/add_pencil_tv"
                     android:layout_width="wrap_content"
@@ -139,7 +139,7 @@
                     android:id="@+id/add_rotate_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toStartOf="@+id/add_pencil_tv" 
+                    android:layout_toStartOf="@+id/add_pencil_tv"
                     android:padding="15dp"
                     android:text="@string/ic_rotate"
                     android:textColor="#FFFFFF"
@@ -163,7 +163,7 @@
                     android:text="@string/ic_images"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp" />
-       
+
             </RelativeLayout>
 
             <View
