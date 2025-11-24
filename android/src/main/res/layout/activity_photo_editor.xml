@@ -178,10 +178,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="8dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="26dp"
-                android:paddingRight="26dp">
+                android:layout_marginBottom="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp">
 
                 <EditText
                     android:id="@+id/message_input"
@@ -191,6 +190,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_above="@+id/actions_container"
                     android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:background="@drawable/caption_input_bg"
                     android:gravity="top|start"
                     android:hint="@string/caption_hint"
@@ -213,33 +214,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp"
                     android:background="#66000000"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/save_tv"
+                        android:id="@+id/clear_all_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="@string/ic_save"
+                        android:text="@string/ic_clear_all"
                         android:textColor="#FFFFFF"
                         android:textSize="25sp" />
 
                     <TextView
-                        android:id="@+id/clear_all_tv"
+                        android:id="@+id/save_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:gravity="center"
-                        android:text="@string/ic_clear_all"
+                        android:text="@string/ic_save"
                         android:textColor="#FFFFFF"
                         android:textSize="25sp" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -256,7 +260,6 @@
                             android:id="@+id/undo_text_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
                             android:text="@string/undo"
                             android:textColor="#FFFFFF"
                             android:textSize="15sp"
@@ -281,10 +284,12 @@
 
             <RelativeLayout
                 android:id="@+id/delete_rl"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:padding="20dp"
+                android:layout_alignBottom="@+id/parent_image_rl"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:padding="0dp"
                 android:visibility="gone">
 
                 <TextView

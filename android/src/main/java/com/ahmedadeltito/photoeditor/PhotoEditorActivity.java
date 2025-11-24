@@ -81,7 +81,7 @@ public class PhotoEditorActivity
     private final String TAG = "PhotoEditorActivity";
     private RelativeLayout parentImageRelativeLayout;
     private RecyclerView drawingViewColorPickerRecyclerView;
-    private TextView undoTextView, undoTextTextView, doneDrawingTextView, eraseDrawingTextView;
+    private TextView /*undoTextView, undoTextTextView,*/ doneDrawingTextView, eraseDrawingTextView;
     private SlidingUpPanelLayout mLayout;
     private View topShadow;
     private RelativeLayout topShadowRelativeLayout;
@@ -163,8 +163,8 @@ public class PhotoEditorActivity
         TextView saveTextView = (TextView) findViewById(R.id.save_tv);
         TextView addRotateTextView = (TextView) findViewById(R.id.add_rotate_tv);
 
-        undoTextView = (TextView) findViewById(R.id.undo_tv);
-        undoTextTextView = (TextView) findViewById(R.id.undo_text_tv);
+        // undoTextView = (TextView) findViewById(R.id.undo_tv);
+        // undoTextTextView = (TextView) findViewById(R.id.undo_text_tv);
         doneDrawingTextView = (TextView) findViewById(R.id.done_drawing_tv);
         eraseDrawingTextView = (TextView) findViewById(R.id.erase_drawing_tv);
         TextView clearAllTextView = (TextView) findViewById(R.id.clear_all_tv);
@@ -202,7 +202,7 @@ public class PhotoEditorActivity
         addImageEmojiTextView.setTypeface(icomoon);
         addCropTextView.setTypeface(icomoon);
         saveTextView.setTypeface(icomoon);
-        undoTextView.setTypeface(icomoon);
+        // undoTextView.setTypeface(icomoon);
         clearAllTextView.setTypeface(icomoon);
         goToNextTextView.setTypeface(icomoon);
         deleteTextView.setTypeface(icomoon);
@@ -276,8 +276,8 @@ public class PhotoEditorActivity
         addTextView.setOnClickListener(this);
         addPencil.setOnClickListener(this);
         saveTextView.setOnClickListener(this);
-        undoTextView.setOnClickListener(this);
-        undoTextTextView.setOnClickListener(this);
+        // undoTextView.setOnClickListener(this);
+        // undoTextTextView.setOnClickListener(this);
         doneDrawingTextView.setOnClickListener(this);
         eraseDrawingTextView.setOnClickListener(this);
         clearAllTextView.setOnClickListener(this);
@@ -823,8 +823,8 @@ public class PhotoEditorActivity
             returnBackWithSavedImage();
         } else if (v.getId() == R.id.clear_all_tv) {
             clearAllViews();
-        } else if (v.getId() == R.id.undo_text_tv || v.getId() == R.id.undo_tv) {
-            undoViews();
+        // } else if (v.getId() == R.id.undo_text_tv || v.getId() == R.id.undo_tv) {
+        //     undoViews();
         } else if (v.getId() == R.id.erase_drawing_tv) {
             eraseDrawing();
         } else if (v.getId() == R.id.go_to_next_screen_tv) {
@@ -839,10 +839,10 @@ public class PhotoEditorActivity
 
     @Override
     public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-        if (numberOfAddedViews > 0) {
-            undoTextView.setVisibility(View.VISIBLE);
-            undoTextTextView.setVisibility(View.VISIBLE);
-        }
+        // if (numberOfAddedViews > 0) {
+        //     undoTextView.setVisibility(View.VISIBLE);
+        //     undoTextTextView.setVisibility(View.VISIBLE);
+        // }
         switch (viewType) {
             case BRUSH_DRAWING:
                 Log.i("BRUSH_DRAWING", "onAddViewListener");
@@ -862,10 +862,10 @@ public class PhotoEditorActivity
     @Override
     public void onRemoveViewListener(int numberOfAddedViews) {
         Log.i(TAG, "onRemoveViewListener");
-        if (numberOfAddedViews == 0) {
-            undoTextView.setVisibility(View.GONE);
-            undoTextTextView.setVisibility(View.GONE);
-        }
+        // if (numberOfAddedViews == 0) {
+        //     undoTextView.setVisibility(View.GONE);
+        //     undoTextTextView.setVisibility(View.GONE);
+        // }
     }
 
     @Override
